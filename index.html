@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SINTAX SYSTEM LOADING</title>
+  <title>LOADING...</title>
   <style>
     :root {
       --yellow: #ffff00;
@@ -30,14 +30,7 @@
       margin-bottom: 40px;
       animation: glitch 1.5s infinite, flicker 0.2s infinite;
       text-shadow: 0 0 2px var(--yellow), 0 0 10px var(--yellow), 0 0 20px #ff0, 0 0 40px #ff0;
-    }
-
-    .system-message {
-      font-size: 1rem;
-      font-weight: 500;
-      margin-bottom: 1rem;
-      text-align: center;
-      animation: flicker 1s infinite;
+      z-index: 10;
     }
 
     .loader-container {
@@ -52,6 +45,7 @@
       padding: 2px;
       box-shadow: 0 0 10px var(--yellow);
       margin-bottom: 30px;
+      z-index: 10;
     }
 
     .loader-block {
@@ -72,6 +66,7 @@
       border: 2px solid var(--yellow);
       box-shadow: 0 0 15px var(--yellow);
       margin-top: 20px;
+      z-index: 10;
     }
 
     #scoreDisplay {
@@ -79,6 +74,22 @@
       margin-top: 10px;
       color: var(--yellow);
       text-shadow: 0 0 8px var(--yellow);
+      z-index: 10;
+    }
+
+    #static-overlay {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background-image: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif');
+      background-size: cover;
+      mix-blend-mode: screen;
+      opacity: 0.08;
+      z-index: 5;
     }
 
     @media (max-width: 600px) {
@@ -126,7 +137,7 @@
       height: 100%;
       background: repeating-linear-gradient(
         to bottom,
-        rgba(0,0,0,0) 0px,
+        rgba(255,255,0,0.03) 0px,
         rgba(255,255,0,0.05) 2px,
         rgba(0,0,0,0) 3px
       );
@@ -139,23 +150,21 @@
       position: absolute;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03), transparent 70%);
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.02), transparent 70%);
       animation: flicker 0.15s infinite;
       pointer-events: none;
-      z-index: 1;
+      z-index: 2;
     }
   </style>
 </head>
 <body>
-  <h1>SYSTEM LOADING...</h1>
-  <div class="system-message">&gt; Initializing SINTAX Audio Terminal</div>
+  <h1>LOADING...</h1>
   <div class="loader-container" id="loader"></div>
-  <div class="system-message">&gt; Memory Blocks Scanned...</div>
-  <div class="system-message">&gt; Awaiting Frequency Lock...</div>
-
   <canvas id="gameCanvas" width="600" height="300"></canvas>
   <div id="scoreDisplay">Score: <span id="score">0</span></div>
+  <div id="static-overlay"></div>
   <audio id="glitch-sound" src="https://cdn.pixabay.com/download/audio/2023/03/06/audio_8e13d6a2b3.mp3?filename=glitch-1-105751.mp3" autoplay loop></audio>
+  <audio id="music-track" src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Komiku/Its_time_for_adventure_/Komiku_-_07_-_Level_5_-_Boss.mp3" autoplay loop></audio>
 
   <script>
     const loader = document.getElementById('loader');
