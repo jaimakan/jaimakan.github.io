@@ -57,10 +57,19 @@
       background-color: yellow;
     }
 
-    canvas {
+    #gameCanvas {
+      display: none;
       background-color: transparent;
       border: 2px solid yellow;
       box-shadow: 0 0 15px yellow;
+    }
+
+    #scoreDisplay {
+      display: none;
+      font-size: 1.2rem;
+      margin-top: 10px;
+      color: yellow;
+      text-shadow: 0 0 8px yellow;
     }
 
     @media (max-width: 600px) {
@@ -74,7 +83,7 @@
       .loader-block {
         width: 10%;
       }
-      canvas {
+      #gameCanvas {
         width: 100vw;
         height: auto;
       }
@@ -148,6 +157,7 @@
   <h1>LOADING...</h1>
   <div class="loader-container" id="loader"></div>
   <canvas id="gameCanvas" width="600" height="300"></canvas>
+  <div id="scoreDisplay">Score: <span id="score">0</span></div>
   <div class="flash"></div>
   <audio id="glitch-sound" src="https://cdn.pixabay.com/download/audio/2023/03/06/audio_8e13d6a2b3.mp3?filename=glitch-1-105751.mp3"></audio>
 
@@ -183,9 +193,10 @@
     setTimeout(() => {
       const sound = document.getElementById('glitch-sound');
       if (sound) sound.play();
+      document.getElementById("gameCanvas").style.display = "block";
+      document.getElementById("scoreDisplay").style.display = "block";
     }, 3000);
 
-    // Simple Brick Breaker Game
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     let ballX = canvas.width / 2;
@@ -198,6 +209,7 @@
     let paddleX = (canvas.width - paddleWidth) / 2;
     let rightPressed = false;
     let leftPressed = false;
+    let score = 0;
 
     document.addEventListener("keydown", e => {
       if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
@@ -228,11 +240,18 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawBall();
       drawPaddle();
+      document.getElementById("score").textContent = score;
       if (ballX + ballDX > canvas.width - ballRadius || ballX + ballDX < ballRadius) ballDX = -ballDX;
-      if (ballY + ballDY < ballRadius) ballDY = -ballDY;
-      else if (ballY + ballDY > canvas.height - ballRadius) {
-        if (ballX > paddleX && ballX < paddleX + paddleWidth) ballDY = -ballDY;
-        else ballDY = -ballDY;
+      if (ballY + ballDY < ballRadius) {
+        ballDY = -ballDY;
+        score++;
+      } else if (ballY + ballDY > canvas.height - ballRadius) {
+        if (ballX > paddleX && ballX < paddleX + paddleWidth) {
+          ballDY = -ballDY;
+          score++;
+        } else {
+          score = 0;
+        }
       }
       if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 5;
       else if (leftPressed && paddleX > 0) paddleX -= 5;
