@@ -33,25 +33,25 @@
     .loader-container {
       width: 80%;
       max-width: 600px;
-      height: 20px;
+      height: 30px;
       background-color: rgba(255, 255, 0, 0.1);
+      border: 2px solid yellow;
+      display: flex;
+      gap: 2px;
+      padding: 2px;
+      box-shadow: 0 0 10px yellow;
+    }
+
+    .loader-block {
+      flex: 1;
+      background-color: transparent;
       border: 1px solid yellow;
-      overflow: hidden;
-      position: relative;
-      box-shadow: 0 0 10px yellow;
+      box-shadow: inset 0 0 5px yellow;
+      transition: background-color 0.2s;
     }
 
-    .loader-bar {
-      width: 0%;
-      height: 100%;
+    .loader-block.filled {
       background-color: yellow;
-      animation: loadBar 3s ease-out forwards;
-      box-shadow: 0 0 10px yellow;
-    }
-
-    @keyframes loadBar {
-      0% { width: 0%; }
-      100% { width: 100%; }
     }
 
     @keyframes glitch {
@@ -120,16 +120,42 @@
 </head>
 <body>
   <h1>LOADING...</h1>
-  <div class="loader-container">
-    <div class="loader-bar"></div>
-  </div>
+  <div class="loader-container" id="loader"></div>
   <div class="flash"></div>
   <audio id="glitch-sound" src="https://cdn.pixabay.com/download/audio/2023/03/06/audio_8e13d6a2b3.mp3?filename=glitch-1-105751.mp3"></audio>
+
   <script>
-    setTimeout(() => {
-      const sound = document.getElementById('glitch-sound');
-      if (sound) sound.play();
-    }, 3000); // Play sound after loading bar ends
+    const loader = document.getElementById('loader');
+    const blockCount = 10;
+    const mid = Math.floor(blockCount / 2);
+    const fillSpeed = 250; // in ms
+    let current = 0;
+    let direction = 1;
+
+    const blocks = [];
+    for (let i = 0; i < blockCount; i++) {
+      const block = document.createElement('div');
+      block.classList.add('loader-block');
+      loader.appendChild(block);
+      blocks.push(block);
+    }
+
+    function animateLoop() {
+      blocks.forEach((block, index) => {
+        if (index <= current) {
+          block.classList.add('filled');
+        } else {
+          block.classList.remove('filled');
+        }
+      });
+
+      current += direction;
+      if (current === mid || current === 0) {
+        direction *= -1;
+      }
+    }
+
+    setInterval(animateLoop, fillSpeed);
   </script>
 </body>
 </html>
