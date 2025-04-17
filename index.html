@@ -20,7 +20,7 @@
     }
 
     h1 {
-      font-size: 4rem;
+      font-size: 6.5vw;
       margin-bottom: 40px;
       animation: glitch 1.5s infinite, flicker 0.2s infinite;
       text-shadow:
@@ -53,6 +53,16 @@
 
     .loader-block.filled {
       background-color: yellow;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+      .loader-container {
+        height: 20px;
+        max-width: 90%;
+      }
     }
 
     @keyframes glitch {
@@ -165,3 +175,4 @@
   </script>
 </body>
 </html>
+
