@@ -3,12 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LOADING...</title>
+  <title>SINTAX SYSTEM LOADING</title>
   <style>
+    :root {
+      --yellow: #ffff00;
+      --bg: #000000;
+      --font: 'Courier New', Courier, monospace;
+    }
+
     body {
-      background-color: #000;
-      color: yellow;
-      font-family: 'Courier New', Courier, monospace;
+      background-color: var(--bg);
+      color: var(--yellow);
+      font-family: var(--font);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -23,11 +29,15 @@
       font-size: 6.5vw;
       margin-bottom: 40px;
       animation: glitch 1.5s infinite, flicker 0.2s infinite;
-      text-shadow:
-        0 0 2px yellow,
-        0 0 10px yellow,
-        0 0 20px #ff0,
-        0 0 40px #ff0;
+      text-shadow: 0 0 2px var(--yellow), 0 0 10px var(--yellow), 0 0 20px #ff0, 0 0 40px #ff0;
+    }
+
+    .system-message {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      text-align: center;
+      animation: flicker 1s infinite;
     }
 
     .loader-container {
@@ -35,12 +45,12 @@
       max-width: 600px;
       height: 30px;
       background-color: rgba(255, 255, 0, 0.1);
-      border: 2px solid yellow;
+      border: 2px solid var(--yellow);
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 2px;
-      box-shadow: 0 0 10px yellow;
+      box-shadow: 0 0 10px var(--yellow);
       margin-bottom: 30px;
     }
 
@@ -48,28 +58,27 @@
       width: 10%;
       height: 100%;
       background-color: transparent;
-      border: 1px solid yellow;
-      box-shadow: inset 0 0 5px yellow;
+      border: 1px solid var(--yellow);
+      box-shadow: inset 0 0 5px var(--yellow);
       transition: background-color 0.2s;
     }
 
     .loader-block.filled {
-      background-color: yellow;
+      background-color: var(--yellow);
     }
 
     #gameCanvas {
-      display: none;
       background-color: transparent;
-      border: 2px solid yellow;
-      box-shadow: 0 0 15px yellow;
+      border: 2px solid var(--yellow);
+      box-shadow: 0 0 15px var(--yellow);
+      margin-top: 20px;
     }
 
     #scoreDisplay {
-      display: none;
       font-size: 1.2rem;
       margin-top: 10px;
-      color: yellow;
-      text-shadow: 0 0 8px yellow;
+      color: var(--yellow);
+      text-shadow: 0 0 8px var(--yellow);
     }
 
     @media (max-width: 600px) {
@@ -105,7 +114,7 @@
 
     @keyframes flicker {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.85; }
+      50% { opacity: 0.8; }
     }
 
     body::before {
@@ -118,10 +127,11 @@
       background: repeating-linear-gradient(
         to bottom,
         rgba(0,0,0,0) 0px,
-        rgba(0,0,0,0.1) 2px,
+        rgba(255,255,0,0.05) 2px,
         rgba(0,0,0,0) 3px
       );
       pointer-events: none;
+      z-index: 1;
     }
 
     body::after {
@@ -132,34 +142,20 @@
       background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03), transparent 70%);
       animation: flicker 0.15s infinite;
       pointer-events: none;
-    }
-
-    .flash {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: white;
-      opacity: 0;
-      animation: flashEffect 0.3s ease-out 3s forwards;
-      z-index: 10;
-    }
-
-    @keyframes flashEffect {
-      0% { opacity: 0; }
-      50% { opacity: 1; }
-      100% { opacity: 0; }
+      z-index: 1;
     }
   </style>
 </head>
 <body>
-  <h1>LOADING...</h1>
+  <h1>SYSTEM LOADING...</h1>
+  <div class="system-message">&gt; Initializing SINTAX Audio Terminal</div>
   <div class="loader-container" id="loader"></div>
+  <div class="system-message">&gt; Memory Blocks Scanned...</div>
+  <div class="system-message">&gt; Awaiting Frequency Lock...</div>
+
   <canvas id="gameCanvas" width="600" height="300"></canvas>
   <div id="scoreDisplay">Score: <span id="score">0</span></div>
-  <div class="flash"></div>
-  <audio id="glitch-sound" src="https://cdn.pixabay.com/download/audio/2023/03/06/audio_8e13d6a2b3.mp3?filename=glitch-1-105751.mp3"></audio>
+  <audio id="glitch-sound" src="https://cdn.pixabay.com/download/audio/2023/03/06/audio_8e13d6a2b3.mp3?filename=glitch-1-105751.mp3" autoplay loop></audio>
 
   <script>
     const loader = document.getElementById('loader');
@@ -190,12 +186,6 @@
     }
 
     setInterval(animateLoop, fillSpeed);
-    setTimeout(() => {
-      const sound = document.getElementById('glitch-sound');
-      if (sound) sound.play();
-      document.getElementById("gameCanvas").style.display = "block";
-      document.getElementById("scoreDisplay").style.display = "block";
-    }, 3000);
 
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
