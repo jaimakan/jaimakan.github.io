@@ -3,36 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LOADING...</title>
+  <title>SinTax LLC — Music & Media</title>
+  <meta name="description" content="SinTax LLC is a New York–based music publishing and production company specializing in songwriting, audio engineering, and sound design." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>S</text></svg>">
+
   <style>
+    /* ====== CRT LOADER STYLES (your original, kept) ====== */
     :root {
       --yellow: #ffff00;
       --bg: #000000;
       --font: 'Courier New', Courier, monospace;
     }
-
+    html, body { height: 100%; }
     body {
       background-color: var(--bg);
       color: var(--yellow);
       font-family: var(--font);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       margin: 0;
       overflow: hidden;
       position: relative;
     }
-
     h1 {
       font-size: 6.5vw;
-      margin-bottom: 40px;
+      margin: 40px 0 20px;
       animation: glitch 1.5s infinite, flicker 0.2s infinite;
       text-shadow: 0 0 2px var(--yellow), 0 0 10px var(--yellow), 0 0 20px #ff0, 0 0 40px #ff0;
       z-index: 10;
+      text-align: center;
     }
-
+    .center-col {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
     .loader-container {
       width: 90%;
       max-width: 600px;
@@ -40,14 +45,12 @@
       background-color: rgba(255, 255, 0, 0.1);
       border: 2px solid var(--yellow);
       display: flex;
-      justify-content: center;
       align-items: center;
       padding: 2px;
       box-shadow: 0 0 10px var(--yellow);
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       z-index: 10;
     }
-
     .loader-block {
       width: 10%;
       height: 100%;
@@ -56,11 +59,7 @@
       box-shadow: inset 0 0 5px var(--yellow);
       transition: background-color 0.2s;
     }
-
-    .loader-block.filled {
-      background-color: var(--yellow);
-    }
-
+    .loader-block.filled { background-color: var(--yellow); }
     #asteroidsCanvas {
       background-color: transparent;
       border: 2px solid var(--yellow);
@@ -69,7 +68,6 @@
       z-index: 10;
       display: none;
     }
-
     #scoreDisplay {
       font-size: 1.2rem;
       margin-top: 10px;
@@ -77,15 +75,12 @@
       text-shadow: 0 0 8px var(--yellow);
       z-index: 10;
       display: none;
+      text-align: center;
     }
-
     #static-overlay {
       content: '';
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       pointer-events: none;
       background-image: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif');
       background-size: cover;
@@ -93,52 +88,35 @@
       opacity: 0.08;
       z-index: 5;
     }
-
     @media (min-width: 601px) {
-      #asteroidsCanvas, #scoreDisplay {
-        display: block;
-      }
+      #asteroidsCanvas, #scoreDisplay { display: block; }
     }
-
     @media (max-width: 600px) {
-      h1 {
-        font-size: 2.5rem;
-      }
-      .loader-container {
-        height: 20px;
-        max-width: 90%;
-      }
-      .loader-block {
-        width: 10%;
-      }
+      h1 { font-size: 2.5rem; }
+      .loader-container { height: 20px; max-width: 90%; }
+      .loader-block { width: 10%; }
     }
-
     @keyframes glitch {
       0% { transform: translate(0); }
       10% { transform: translate(-2px, -2px); }
-      20% { transform: translate(2px, 2px); }
-      30% { transform: translate(-1px, 2px); }
-      40% { transform: translate(2px, -1px); }
-      50% { transform: translate(-2px, 1px); }
-      60% { transform: translate(1px, -2px); }
+      20% { transform: translate( 2px,  2px); }
+      30% { transform: translate(-1px,  2px); }
+      40% { transform: translate( 2px, -1px); }
+      50% { transform: translate(-2px,  1px); }
+      60% { transform: translate( 1px, -2px); }
       70% { transform: translate(-2px, -2px); }
-      80% { transform: translate(2px, 2px); }
-      90% { transform: translate(1px, -1px); }
-      100% { transform: translate(0); }
+      80% { transform: translate( 2px,  2px); }
+      90% { transform: translate( 1px, -1px); }
+      100%{ transform: translate(0); }
     }
-
     @keyframes flicker {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.8; }
     }
-
     body::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       background: repeating-linear-gradient(
         to bottom,
         rgba(255,255,0,0.03) 0px,
@@ -148,28 +126,96 @@
       pointer-events: none;
       z-index: 1;
     }
-
     body::after {
       content: '';
       position: absolute;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       background: radial-gradient(circle at center, rgba(255, 255, 255, 0.02), transparent 70%);
       animation: flicker 0.15s infinite;
       pointer-events: none;
       z-index: 2;
     }
+
+    /* ====== MAIN BUSINESS PAGE ====== */
+    #main {
+      position: relative;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease;
+      background: #0b0b0b;
+      color: #f4f4f4;
+      font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      min-height: 100vh;
+      overflow-y: auto;
+    }
+    .wrap { min-height: 100vh; display: grid; place-items: center; padding: 32px; }
+    .card {
+      max-width: 780px;
+      width: 100%;
+      background: #151515;
+      border: 1px solid #222;
+      border-radius: 20px;
+      padding: 30px;
+    }
+    h1.title { margin: 0 0 6px; font-size: 34px; letter-spacing: .3px; }
+    h2 { margin: 18px 0 8px; font-size: 18px; color: #a8a8a8; text-transform: uppercase; letter-spacing: .12em; }
+    a.link { color: #c9e4ff; text-decoration: none; border-bottom: 1px dotted #5aa1ff; }
+    .grid { display: grid; gap: 14px; }
+    .grid-2 { grid-template-columns: 1fr; }
+    @media (min-width: 720px){ .grid-2 { grid-template-columns: 1fr 1fr; } }
+    .btn { display: inline-block; margin-top: 16px; padding: 10px 14px; border-radius: 10px; background: #0f62fe; color: #fff; text-decoration: none; }
+    .footer { margin-top: 18px; color: #a8a8a8; font-size: 13px; display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+    /* Hides the loader section when we switch */
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
-  <h1>LOADING...</h1>
-  <div class="loader-container" id="loader"></div>
-  <canvas id="asteroidsCanvas" width="600" height="400"></canvas>
-  <div id="scoreDisplay">Score: <span id="score">0</span></div>
-  <div id="static-overlay"></div>
-  <audio id="music-track" src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Komiku/Its_time_for_adventure_/Komiku_-_07_-_Level_5_-_Boss.mp3" autoplay loop></audio>
+
+  <!-- ====== LOADER + GAME SECTION ====== -->
+  <section id="loaderSection" class="center-col">
+    <h1>LOADING...</h1>
+    <div class="loader-container" id="loader"></div>
+    <canvas id="asteroidsCanvas" width="600" height="400"></canvas>
+    <div id="scoreDisplay">Score: <span id="score">0</span></div>
+    <div id="static-overlay"></div>
+    <audio id="music-track" src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Komiku/Its_time_for_adventure_/Komiku_-_07_-_Level_5_-_Boss.mp3" preload="auto" loop></audio>
+  </section>
+
+  <!-- ====== MAIN BUSINESS PAGE ====== -->
+  <main id="main">
+    <div class="wrap">
+      <section class="card">
+        <h1 class="title">SinTax LLC</h1>
+        <p><strong>Creative Music &amp; Media Company</strong></p>
+
+        <p>SinTax LLC is a New York–based music publishing and production company specializing in songwriting, audio engineering, and sound design for artists and media projects.</p>
+        <p>We create original compositions for recording artists and collaborate on music for film, television, and digital platforms. Our near-term focus is developing our catalog and partnerships while we build out our full website.</p>
+
+        <a class="btn" href="mailto:contact@sintax.xyz">Email Us</a>
+
+        <div class="grid grid-2" style="margin-top:18px">
+          <div>
+            <h2>Services</h2>
+            <p>• Songwriting &amp; top-line<br/>• Music production &amp; mixing<br/>• Sound design for media<br/>• Music publishing &amp; licensing</p>
+          </div>
+          <div>
+            <h2>Business Info</h2>
+            <p><strong>Legal name:</strong> SinTax LLC<br/>
+               <strong>Location:</strong> Albany, NY (operating in NYC)<br/>
+               <strong>Email:</strong> <a class="link" href="mailto:contact@sintax.xyz">contact@sintax.xyz</a></p>
+          </div>
+        </div>
+
+        <div class="footer">
+          <span>© 2025 SinTax LLC. All rights reserved.</span>
+          <span>Website under construction.</span>
+        </div>
+      </section>
+    </div>
+  </main>
 
   <script>
+    /* ====== Loader blocks animation (yours) ====== */
     const loader = document.getElementById('loader');
     const blockCount = 10;
     const mid = Math.floor(blockCount / 2);
@@ -184,21 +230,17 @@
       loader.appendChild(block);
       blocks.push(block);
     }
-
     function animateLoop() {
       blocks.forEach((block, index) => {
-        if (index <= current) {
-          block.classList.add('filled');
-        } else {
-          block.classList.remove('filled');
-        }
+        if (index <= current) { block.classList.add('filled'); }
+        else { block.classList.remove('filled'); }
       });
       current += direction;
       if (current === mid || current === 0) direction *= -1;
     }
-    setInterval(animateLoop, fillSpeed);
+    const animTimer = setInterval(animateLoop, fillSpeed);
 
-    // Asteroids game setup
+    /* ====== Mini Asteroids (kept), but we hide it after 2.5s ====== */
     const canvas = document.getElementById("asteroidsCanvas");
     const ctx = canvas.getContext("2d");
     const music = document.getElementById("music-track");
@@ -215,68 +257,58 @@
         dy: (Math.random() - 0.5) * 2
       };
     }
-
     for (let i = 0; i < 5; i++) asteroids.push(spawnAsteroid());
 
     document.addEventListener("keydown", e => keys[e.key] = true);
     document.addEventListener("keyup", e => keys[e.key] = false);
 
     function drawShip() {
-      ctx.save();
-      ctx.translate(ship.x, ship.y);
-      ctx.rotate(ship.angle);
-      ctx.beginPath();
-      ctx.moveTo(10, 0);
-      ctx.lineTo(-10, -6);
-      ctx.lineTo(-10, 6);
-      ctx.closePath();
-      ctx.strokeStyle = "yellow";
-      ctx.stroke();
-      ctx.restore();
+      ctx.save(); ctx.translate(ship.x, ship.y); ctx.rotate(ship.angle);
+      ctx.beginPath(); ctx.moveTo(10, 0); ctx.lineTo(-10, -6); ctx.lineTo(-10, 6); ctx.closePath();
+      ctx.strokeStyle = "yellow"; ctx.stroke(); ctx.restore();
     }
-
     function drawAsteroids() {
       ctx.strokeStyle = "yellow";
-      asteroids.forEach(a => {
-        ctx.beginPath();
-        ctx.arc(a.x, a.y, 10, 0, Math.PI * 2);
-        ctx.stroke();
-      });
+      asteroids.forEach(a => { ctx.beginPath(); ctx.arc(a.x, a.y, 10, 0, Math.PI * 2); ctx.stroke(); });
     }
-
     function update() {
       if (keys['ArrowLeft']) ship.angle -= 0.05;
       if (keys['ArrowRight']) ship.angle += 0.05;
-      if (keys['ArrowUp']) {
-        ship.x += Math.cos(ship.angle) * 2;
-        ship.y += Math.sin(ship.angle) * 2;
-      }
+      if (keys['ArrowUp']) { ship.x += Math.cos(ship.angle) * 2; ship.y += Math.sin(ship.angle) * 2; }
       asteroids.forEach(a => {
-        a.x += a.dx;
-        a.y += a.dy;
-        if (a.x < 0) a.x = canvas.width;
-        if (a.x > canvas.width) a.x = 0;
-        if (a.y < 0) a.y = canvas.height;
-        if (a.y > canvas.height) a.y = 0;
-        let dx = a.x - ship.x;
-        let dy = a.y - ship.y;
-        if (Math.sqrt(dx * dx + dy * dy) < 15) {
-          score++;
-          music.volume = Math.min(1, 0.2 + score * 0.05);
-          a.x = -999;
-        }
+        a.x += a.dx; a.y += a.dy;
+        if (a.x < 0) a.x = canvas.width; if (a.x > canvas.width) a.x = 0;
+        if (a.y < 0) a.y = canvas.height; if (a.y > canvas.height) a.y = 0;
+        let dx = a.x - ship.x, dy = a.y - ship.y;
+        if (Math.hypot(dx, dy) < 15) { score++; a.x = -999; }
       });
+      const s = document.getElementById("score"); if (s) s.textContent = score;
     }
-
     function gameLoop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      update();
-      drawShip();
-      drawAsteroids();
-      document.getElementById("score").textContent = score;
+      update(); drawShip(); drawAsteroids();
       requestAnimationFrame(gameLoop);
     }
     gameLoop();
+
+    /* ====== Switch to business page after ~2.5s ====== */
+    function showMain() {
+      clearInterval(animTimer);
+      // Stop/hide game + audio
+      try { music.pause(); music.currentTime = 0; } catch(e){}
+      document.getElementById('loaderSection').classList.add('hidden');
+
+      // Reveal main site
+      const main = document.getElementById('main');
+      main.style.opacity = 1;
+      main.style.pointerEvents = 'auto';
+      document.body.style.overflow = 'auto';
+    }
+    // Autoplay audio on desktop only (mobile tends to block)
+    const canAutoplay = matchMedia('(min-width: 601px)').matches;
+    if (canAutoplay) { music.volume = 0.2; music.play().catch(()=>{}); }
+
+    setTimeout(showMain, 2500); // 2.5 seconds
   </script>
 </body>
 </html>
