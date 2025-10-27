@@ -82,15 +82,19 @@
       opacity:0; pointer-events:none; transition:opacity 1s ease;
       min-height:100vh; overflow:hidden; color:var(--white); background:transparent;
     }
-    /* Fullscreen canvas behind UI */
+
+    /* layering: background < scanlines < canvas < UI */
     #tron{
-      position:fixed; inset:0; z-index:0; background:#000;
-      image-rendering: pixelated; /* crisp squares */
+      position:fixed; inset:0;
+      z-index:3;               /* above CRT overlays, below UI */
+      background:transparent;  /* keep CRT background visible */
+      image-rendering: pixelated;
+      pointer-events:none;
     }
-    /* top row brand/menu (matching your aesthetic) */
     .top-row{
-      position:fixed; top:18px; left:18px; right:18px; z-index:1;
+      position:fixed; top:18px; left:18px; right:18px;
       display:flex; justify-content:space-between; align-items:center; gap:12px;
+      z-index:5;
     }
     .pill{
       background:rgba(17,17,17,.75); backdrop-filter: blur(8px);
@@ -101,9 +105,8 @@
     .menu{display:inline-grid; grid-template-columns:repeat(3,8px); gap:6px; padding:10px 14px}
     .dot{width:8px; height:8px; background:#e5e7eb; border-radius:2px}
 
-    /* caption */
     .caption{
-      position:fixed; left:18px; bottom:12vh; z-index:1;
+      position:fixed; left:18px; bottom:12vh; z-index:5;
       max-width:min(80vw,780px);
       background:var(--glass); color:#fff; border-radius:8px;
       border:1px solid rgba(255,255,255,.18);
@@ -207,144 +210,92 @@
     enterWrap.addEventListener('click', showMain);
     enterWrap.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); showMain(); } });
 
-    /* ============ TRON BIKE SCENE ============ */
+    /* ============ TRON BIKE SCENE (wrap + fast-fade) ============ */
     function initTron(){
       const c = document.getElementById('tron');
-      const ctx = c.getContext('2d');
-      // Pixel aesthetic via low-res buffer we scale up
-      const PIX = 3;                   // pixel size (bigger = chunkier pixels)
+      const ctx = c.getContext('2d', { alpha: true });
+
+      const PIX = 3; // pixel size (bigger = chunkier pixels)
       function resize(){
-        c.width  = Math.floor(window.innerWidth  / PIX);
-        c.height = Math.floor(window.innerHeight / PIX);
+        c.width  = Math.max(1, Math.floor(window.innerWidth  / PIX));
+        c.height = Math.max(1, Math.floor(window.innerHeight / PIX));
         ctx.imageSmoothingEnabled = false;
+        ctx.clearRect(0,0,c.width,c.height);
       }
       resize(); window.addEventListener('resize', resize);
 
-      // Bike state on a grid
-      const color = '#ffff00';
-      let bike = {
-        x: Math.floor(c.width * 0.2),
-        y: Math.floor(c.height * 0.5),
-        dir: {x:1, y:0},         // moving right initially
-        speed: 0.9               // grid cells per frame
-      };
+      // Bike state: smooth sweep with slight curves
+      const COLOR = '#ffff00';
+      let x = Math.floor(c.width * 0.15);
+      let y = Math.floor(c.height * 0.5);
+      let angle = 0;                  // radians
+      let speed = 0.95;               // pixels per frame (low-res units)
+      let steer = 0.0;
+      let targetSteer = 0.0;
+      const MAX_STEER = 0.012;        // gentle turns
 
-      // Trail particles
-      const trail = []; // {x,y,life}
-      const MAX_PARTS = 1200;
+      function lerp(a,b,t){ return a + (b-a)*t; }
 
-      // Occasional turns for interest
-      let turnCooldown = 0;
-
-      function turnRandom(){
-        // prefer 90-degree turns
-        const dirs = [
-          {x: 1, y: 0}, {x:-1, y: 0},
-          {x: 0, y: 1}, {x: 0, y:-1}
-        ].filter(d => !(d.x === -bike.dir.x && d.y === -bike.dir.y)); // no immediate reverse
-        bike.dir = dirs[Math.floor(Math.random()*dirs.length)];
-      }
+      // Fade settings — higher = faster cleanup (keeps page readable)
+      const FADE_ALPHA = 0.18;  // try 0.14–0.22 to taste
+      const TRAIL_BLUR = 10;
+      const BIKE_BLUR  = 18;
 
       function step(){
-        // Background: subtle dim to create fade/afterglow
+        // Fade old frame (quick trail decay)
         ctx.save();
-        ctx.globalAlpha = 0.1;
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = FADE_ALPHA;
         ctx.fillStyle = '#000';
         ctx.fillRect(0,0,c.width,c.height);
         ctx.restore();
 
-        // Move bike (continuous, not strictly integer)
-        bike.x += bike.dir.x * bike.speed;
-        bike.y += bike.dir.y * bike.speed;
-
-        // Wrap edges
-        if (bike.x < 0) bike.x = c.width-1;
-        if (bike.x > c.width-1) bike.x = 0;
-        if (bike.y < 0) bike.y = c.height-1;
-        if (bike.y > c.height-1) bike.y = 0;
-
-        // Drop a trail particle
-        trail.push({x: bike.x, y: bike.y, life: 1.0});
-        if (trail.length > MAX_PARTS) trail.shift();
-
-        // Random turn logic
-        if (--turnCooldown <= 0){
-          if (Math.random() < 0.03) { turnRandom(); turnCooldown = 40; }
+        // Steering for life/variation
+        if (Math.random() < 0.02) {
+          targetSteer = (Math.random()*2 - 1) * MAX_STEER;
         }
+        steer = lerp(steer, targetSteer, 0.03);
+        angle += steer;
 
-        // Draw grid shimmer (very faint)
+        // Move
+        x += Math.cos(angle) * speed;
+        y += Math.sin(angle) * speed;
+
+        // Wrap edges (loop around)
+        if (x < 0) x += c.width;
+        if (x >= c.width) x -= c.width;
+        if (y < 0) y += c.height;
+        if (y >= c.height) y -= c.height;
+
+        // Trail pixel (glow)
         ctx.save();
-        ctx.globalAlpha = 0.06;
-        ctx.strokeStyle = '#444';
-        ctx.lineWidth = 1;
-        for (let gx=0; gx<c.width; gx+=Math.floor(24/PIX)) {
-          ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,c.height); ctx.stroke();
-        }
-        for (let gy=0; gy<c.height; gy+=Math.floor(24/PIX)) {
-          ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(c.width,gy); ctx.stroke();
-        }
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.shadowColor = COLOR;
+        ctx.shadowBlur  = TRAIL_BLUR;
+        ctx.fillStyle   = COLOR;
+        ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
         ctx.restore();
 
-        // Draw trail with glow + fade
-        for (let i=0;i<trail.length;i++){
-          const p = trail[i];
-          p.life *= 0.985;                // fade factor
-          if (p.life < 0.02) continue;
-
-          ctx.save();
-          ctx.globalAlpha = p.life;
-          ctx.shadowColor = color;
-          ctx.shadowBlur = 12;
-          ctx.fillStyle = color;
-          ctx.fillRect(Math.floor(p.x), Math.floor(p.y), 1, 1);
-          ctx.restore();
-        }
-
-        // Draw bike (chunky + brighter glow)
+        // Bike (brighter)
         ctx.save();
-        ctx.shadowColor = color;
-        ctx.shadowBlur = 20;
-        ctx.fillStyle = color;
-
-        // Pixel-bike sprite (3x2 rectangle + headlight)
-        const bx = Math.floor(bike.x);
-        const by = Math.floor(bike.y);
-        // body
-        ctx.fillRect(bx, by, 2, 1);
-        // wheel hint (one pixel offset based on direction)
-        if (bike.dir.x !== 0) {
-          ctx.fillRect(bx, by+1, 1, 1);
-          ctx.fillRect(bx+1, by+1, 1, 1);
-        } else {
-          ctx.fillRect(bx-1, by, 1, 1);
-          ctx.fillRect(bx-1, by+1, 1, 1);
-        }
-        // headlight (extra pop)
         ctx.globalCompositeOperation = 'lighter';
-        ctx.fillRect(bx + (bike.dir.x>0?2:(bike.dir.x<0?-1:0)),
-                     by + (bike.dir.y>0?1:(bike.dir.y<0?-1:0)),
-                     1, 1);
+        ctx.shadowColor = COLOR;
+        ctx.shadowBlur  = BIKE_BLUR;
+        ctx.fillStyle   = COLOR;
+        const bx = Math.floor(x), by = Math.floor(y);
+        // 2x2 body
+        ctx.fillRect(bx, by, 2, 2);
+        // headlight one pixel ahead
+        const hx = bx + Math.round(Math.cos(angle));
+        const hy = by + Math.round(Math.sin(angle));
+        ctx.fillRect(hx, hy, 1, 1);
         ctx.restore();
 
         requestAnimationFrame(step);
       }
 
-      // Scale canvas up for chunky pixels
-      function renderScaled() {
-        const display = c.getContext('2d');
-        const temp = document.createElement('canvas');
-        temp.width = c.width;
-        temp.height = c.height;
-        const tctx = temp.getContext('2d');
-        tctx.drawImage(c, 0, 0);
-        display.imageSmoothingEnabled = false;
-        display.drawImage(temp, 0, 0, c.width * PIX, c.height * PIX);
-      }
-
-      // Kick off loop
-      requestAnimationFrame(step);
+      step();
     }
   </script>
 </body>
 </html>
-      
