@@ -4,20 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SinTax LLC — Creative Music & Media</title>
-  <meta name="description" content="SinTax LLC: music publishing, songwriting, production, mixing, and sound design for artists and media." />
+  <meta name="description" content="SinTax LLC: Music. Art. Theory. Prolonging perception." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>S</text></svg>">
   <style>
     /* -------------------- CRT INTRO (same vibe) -------------------- */
     :root{
       --y:#ffff00; --bg:#000; --mono:'Courier New',monospace;
-      --soft:#f7f8fa; --panel:#ffffff; --ink:#0f172a; --muted:#64748b;
-      --ring:#e2e8f0; --chip:#eef2f7; --cta:#0f62fe; --ok:#16a34a;
-      --shadow: 0 8px 30px rgba(2,8,23,.06);
-      --radius:20px;
+      --ink:#0f172a; --white:#fff; --black:#000; --glass:rgba(0,0,0,.55);
     }
-    html,body{height:100%} body{margin:0; background:var(--bg); color:var(--y); font-family:var(--mono); overflow:hidden; position:relative}
-
-    /* scanlines */
+    html,body{height:100%} body{margin:0;background:var(--bg);color:var(--y);font-family:var(--mono);overflow:hidden;position:relative}
     body::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(255,255,0,.03)0,rgba(255,255,0,.05)2px,transparent 3px);pointer-events:none;z-index:1}
     body::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,255,255,.02),transparent 70%);animation:flicker .15s infinite;pointer-events:none;z-index:2}
     @keyframes flicker{0%,100%{opacity:1}50%{opacity:.85}}
@@ -50,40 +45,36 @@
       animation:pulse 1.6s ease-in-out infinite}
     @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
     .enter-hint{margin-top:6px;font-size:.95rem;opacity:.9;text-shadow:0 0 6px var(--y)}
-
     .hidden{display:none !important}
 
-    /* -------------------- MAIN LANDING (light UI) -------------------- */
-    #main{opacity:0;pointer-events:none;transition:opacity 1s ease;background:var(--soft);color:var(--ink);
-      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;min-height:100vh;overflow-y:auto}
-    .shell{max-width:1100px;margin:0 auto;padding:28px}
-    .navbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-    .brand{font-weight:700;background:#fff;padding:8px 14px;border-radius:999px;border:1px solid var(--ring);box-shadow:var(--shadow)}
-    .menu{background:#fff;border:1px solid var(--ring);border-radius:999px;padding:8px 14px;box-shadow:var(--shadow)}
-    .hero{background:#ffffff;border:1px solid var(--ring);border-radius:28px;padding:32px 28px 24px;box-shadow:var(--shadow)}
-    .kicker{font-family:Georgia,serif;font-style:italic;font-size:38px;letter-spacing:.02em}
-    .headline{font-size:clamp(36px,6.5vw,64px);font-weight:800;margin:6px 0 6px}
-    .sub{color:var(--muted);max-width:720px;margin-bottom:18px}
-    .cta{display:inline-block;background:var(--ink);color:#fff;padding:12px 18px;border-radius:999px;text-decoration:none;box-shadow:var(--shadow)}
-    .grid{display:grid;gap:16px;margin-top:18px}
-    .g2{grid-template-columns:1fr}
-    @media(min-width:900px){.g2{grid-template-columns:1.2fr .8fr}}
-    .card{background:#fff;border:1px solid var(--ring);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
-    .stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .stat{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:1px solid var(--ring);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
-    .vbar{width:1px;height:24px;background:#e5e7eb}
-    .avail{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--ring);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
-    .dot{width:12px;height:12px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 6px rgba(22,163,74,.12)}
-    .linkrow{margin-left:auto;display:flex;align-items:center;gap:8px}
-    .review{display:flex;gap:12px;align-items:flex-start}
-    .avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#e2e8f0,#cbd5e1)}
-    .rating{display:inline-flex;gap:6px;align-items:center;background:#fff;border:1px solid var(--ring);border-radius:999px;padding:6px 10px;box-shadow:var(--shadow);font-size:.9rem}
-    .feature{overflow:hidden}
-    .feature .img{aspect-ratio:16/9;border-radius:18px;background:linear-gradient(135deg,#1f2937,#0b1220);display:grid;place-items:center;color:#fff;font-weight:700;letter-spacing:.12em}
-    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-    .chip{background:var(--chip);border:1px solid var(--ring);padding:6px 10px;border-radius:999px;font-size:.85rem}
-
-    .footer{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:.9rem;margin-top:14px}
+    /* -------------------- NEW LANDING (poster style) -------------------- */
+    #main{opacity:0;pointer-events:none;transition:opacity 1s ease;min-height:100vh;overflow:hidden;
+      color:var(--white);background:#111}
+    /* Background image (upload landing.jpg to repo root or /assets, then update the url) */
+    .bg{
+      position:fixed; inset:0;
+      background-image: url('landing.jpg'), linear-gradient(180deg,#111,#111);
+      background-size: cover; background-position: center; filter: none;
+      z-index:-1;
+    }
+    /* Top bar pills */
+    .top-row{
+      position:fixed; top:18px; left:18px; right:18px; display:flex; justify-content:space-between; align-items:center; gap:12px;
+    }
+    .pill{background:rgba(17,17,17,.75); backdrop-filter: blur(8px);
+      color:#f5f7fa; border:1px solid rgba(255,255,255,.12);
+      border-radius:12px; padding:10px 16px; font-weight:600; letter-spacing:.02em; box-shadow:0 8px 24px rgba(0,0,0,.25)}
+    .menu{display:inline-grid; grid-template-columns:repeat(3,8px); gap:6px; padding:10px 14px}
+    .dot{width:8px; height:8px; background:#e5e7eb; border-radius:2px}
+    /* Caption box (like your screenshot) */
+    .caption{
+      position:fixed; left:18px; bottom:20vh; max-width:min(70vw,680px);
+      background:var(--glass); color:#fff; border-radius:8px; border:1px solid rgba(255,255,255,.18);
+      padding:8px 12px; font-size:clamp(18px,2.6vw,28px); line-height:1.15; box-shadow:0 10px 30px rgba(0,0,0,.35)
+    }
+    @media (max-width:640px){
+      .caption{max-width:86vw; bottom:16vh; font-size:clamp(16px,4.8vw,22px)}
+    }
   </style>
 </head>
 <body>
@@ -108,130 +99,63 @@
     <audio id="music-track" src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Komiku/Its_time_for_adventure_/Komiku_-_07_-_Level_5_-_Boss.mp3" preload="auto" loop></audio>
   </section>
 
-  <!-- -------------- MAIN LANDING -------------- -->
-  <main id="main" role="main">
-    <div class="shell">
-      <div class="navbar">
-        <div class="brand">SinTax</div>
-        <div class="menu">Menu</div>
+  <!-- -------------- NEW POSTER LANDING -------------- -->
+  <main id="main" role="main" aria-label="SinTax landing">
+    <div class="bg" aria-hidden="true"></div>
+
+    <div class="top-row">
+      <div class="pill" aria-label="brand">SINTAX<sup>®</sup></div>
+      <div class="pill menu" aria-label="menu">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
       </div>
-
-      <section class="hero">
-        <div class="kicker">Creative Music &amp;<span style="font-family:Georgia,serif;font-style:italic;"> Sound Design</span></div>
-        <h1 class="headline">We craft songs, scores, and mixes that connect.</h1>
-        <p class="sub">SinTax LLC is a New York–based music publishing and production company. We write for artists, produce records, and design sound for film, TV, and digital media.</p>
-        <a class="cta" href="mailto:contact@sintax.xyz">Book a 15-minute call</a>
-
-        <div class="grid g2">
-          <!-- Left column -->
-          <div class="grid" style="margin-top:18px">
-            <div class="stats">
-              <div class="stat">
-                <div style="font-weight:800;font-size:22px">20+</div>
-                <div class="vbar"></div>
-                <div>Collaborators</div>
-              </div>
-              <div class="stat">
-                <div style="font-weight:800;font-size:22px">100%</div>
-                <div class="vbar"></div>
-                <div>Satisfaction</div>
-              </div>
-            </div>
-
-            <div class="avail">
-              <div class="dot"></div>
-              <div>
-                <div style="font-weight:700">Arrange a 15-minute consultation</div>
-                <div style="font-size:.9rem;color:var(--muted)">Available now</div>
-              </div>
-              <div class="linkrow">
-                <a class="cta" href="mailto:contact@sintax.xyz" style="padding:8px 14px">Contact</a>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="rating">
-                ★ 4.9 · Based on artist feedback
-              </div>
-              <div class="review" style="margin-top:12px">
-                <div class="avatar"></div>
-                <div>
-                  <div style="font-size:.95rem">“Reliable, fast, and sounds great — exactly what we needed.”</div>
-                  <div style="font-size:.85rem;color:var(--muted)">— Client testimonial</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right column -->
-          <div class="feature card">
-            <div class="img">PROJECT PREVIEW</div>
-            <div style="margin-top:12px;font-weight:700">Innovative Production</div>
-            <div class="sub" style="margin:6px 0 0">Clean, modern production with attention to detail and emotion.</div>
-            <div class="chips">
-              <div class="chip">Songwriting</div>
-              <div class="chip">Mixing</div>
-              <div class="chip">Sound Design</div>
-              <div class="chip">Publishing</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="footer">
-          <span>© 2025 SinTax LLC. All rights reserved.</span>
-          <span>Albany / NYC • <a href="mailto:contact@sintax.xyz" style="color:var(--ink);text-decoration:none;border-bottom:1px dotted #94a3b8">contact@sintax.xyz</a></span>
-        </div>
-      </section>
     </div>
+
+    <div class="caption">Music. Art. Theory. Prolonging perception.</div>
   </main>
 
   <script>
-    /* -------- loader blocks (your original) -------- */
-    const loader = document.getElementById('loader');
+    /* -------- loader blocks (yours) -------- */
+    const loader=document.getElementById('loader');
     const blockCount=10, mid=Math.floor(blockCount/2), fillSpeed=250;
     let current=0, direction=1;
     const blocks=[];
-    for(let i=0;i<blockCount;i++){ const b=document.createElement('div'); b.className='loader-block'; loader.appendChild(b); blocks.push(b); }
-    function animateLoop(){ blocks.forEach((b,i)=>b.classList.toggle('filled', i<=current)); current+=direction; if(current===mid||current===0) direction*=-1; }
-    const animTimer=setInterval(animateLoop, fillSpeed);
+    for(let i=0;i<blockCount;i++){const b=document.createElement('div');b.className='loader-block';loader.appendChild(b);blocks.push(b)}
+    function animateLoop(){blocks.forEach((b,i)=>b.classList.toggle('filled',i<=current));current+=direction;if(current===mid||current===0)direction*=-1}
+    const animTimer=setInterval(animateLoop,fillSpeed);
 
     /* -------- tiny asteroids game (desktop) -------- */
     const canvas=document.getElementById('asteroidsCanvas');
     const ctx=canvas.getContext('2d');
     const music=document.getElementById('music-track');
     let ship={x:300,y:190,angle:0}, asteroids=[], keys={}, score=0;
-    function spawnAsteroid(){return {x:Math.random()*canvas.width,y:Math.random()*canvas.height,dx:(Math.random()-.5)*2,dy:(Math.random()-.5)*2}}
+    function spawnAsteroid(){return{x:Math.random()*canvas.width,y:Math.random()*canvas.height,dx:(Math.random()-.5)*2,dy:(Math.random()-.5)*2}}
     for(let i=0;i<5;i++) asteroids.push(spawnAsteroid());
     document.addEventListener('keydown',e=>keys[e.key]=true);
     document.addEventListener('keyup',e=>keys[e.key]=false);
     function drawShip(){ctx.save();ctx.translate(ship.x,ship.y);ctx.rotate(ship.angle);ctx.beginPath();ctx.moveTo(10,0);ctx.lineTo(-10,-6);ctx.lineTo(-10,6);ctx.closePath();ctx.strokeStyle='yellow';ctx.stroke();ctx.restore()}
     function drawAsteroids(){ctx.strokeStyle='yellow';asteroids.forEach(a=>{ctx.beginPath();ctx.arc(a.x,a.y,10,0,Math.PI*2);ctx.stroke()})}
-    function update(){ if(keys['ArrowLeft'])ship.angle-=.05; if(keys['ArrowRight'])ship.angle+=.05; if(keys['ArrowUp']){ship.x+=Math.cos(ship.angle)*2; ship.y+=Math.sin(ship.angle)*2}
-      asteroids.forEach(a=>{a.x+=a.dx;a.y+=a.dy; if(a.x<0)a.x=canvas.width; if(a.x>canvas.width)a.x=0; if(a.y<0)a.y=canvas.height; if(a.y>canvas.height)a.y=0;
-        const d=Math.hypot(a.x-ship.x,a.y-ship.y); if(d<15){score++; a.x=-999;}});
-      const s=document.getElementById('score'); if(s) s.textContent=score;
-    }
+    function update(){if(keys['ArrowLeft'])ship.angle-=.05;if(keys['ArrowRight'])ship.angle+=.05;if(keys['ArrowUp']){ship.x+=Math.cos(ship.angle)*2;ship.y+=Math.sin(ship.angle)*2}
+      asteroids.forEach(a=>{a.x+=a.dx;a.y+=a.dy;if(a.x<0)a.x=canvas.width;if(a.x>canvas.width)a.x=0;if(a.y<0)a.y=canvas.height;if(a.y>canvas.height)a.y=0;
+        const d=Math.hypot(a.x-ship.x,a.y-ship.y);if(d<15){score++;a.x=-999;}})}
     function loop(){ctx.clearRect(0,0,canvas.width,canvas.height);update();drawShip();drawAsteroids();requestAnimationFrame(loop)}
-    if(matchMedia('(min-width: 601px)').matches){ music.volume=.18; music.play().catch(()=>{}); loop(); }
+    if(matchMedia('(min-width: 601px)').matches){music.volume=.18;music.play().catch(()=>{});loop()}
 
     /* -------- ENTER → show landing -------- */
     const enterWrap=document.getElementById('enterWrap');
     function showMain(){
       clearInterval(animTimer);
-      try{music.pause(); music.currentTime=0;}catch(e){}
+      try{music.pause();music.currentTime=0;}catch(e){}
       document.getElementById('loaderSection').classList.add('hidden');
       const main=document.getElementById('main');
       main.style.opacity=1; main.style.pointerEvents='auto';
       document.body.style.overflow='auto';
-      // Switch body bg to light to avoid flash when returning
-      document.body.style.background='var(--soft)';
-      document.body.style.color='var(--ink)';
+      // ensure dark background behind any uncovered area
+      document.body.style.background='#111';
     }
     enterWrap.addEventListener('click',showMain);
-    enterWrap.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();showMain();} });
-
-    // Build loader blocks row container only when present
-    (function ensureLoader(){ if(!loader) return; })();
+    enterWrap.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showMain();}})
   </script>
 </body>
 </html>
