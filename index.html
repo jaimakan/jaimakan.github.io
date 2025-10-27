@@ -47,20 +47,21 @@
     .enter-hint{margin-top:6px;font-size:.95rem;opacity:.9;text-shadow:0 0 6px var(--y)}
     .hidden{display:none !important}
 
-    /* -------------------- NEW LANDING (poster style) -------------------- */
-    #main{opacity:0;pointer-events:none;transition:opacity 1s ease;min-height:100vh;overflow:hidden;
-      color:var(--white);background:#111}
-    /* Background image (upload landing.jpg to repo root or /assets, then update the url) */
-    .bg{
-      position:fixed; inset:0;
-      background-image: url('landing.jpg'), linear-gradient(180deg,#111,#111);
-      background-size: cover; background-position: center; filter: none;
-      z-index:-1;
-    }
-    /* Top bar pills */
-    .top-row{
-      position:fixed; top:18px; left:18px; right:18px; display:flex; justify-content:space-between; align-items:center; gap:12px;
-    }
+/* -------------------- NEW LANDING (poster style) -------------------- */
+- #main{opacity:0;pointer-events:none;transition:opacity 1s ease;min-height:100vh;overflow:hidden;
+-   color:var(--white);background:#111}
++ #main{opacity:0;pointer-events:none;transition:opacity 1s ease;min-height:100vh;overflow:hidden;
++   color:var(--white);background:transparent}
+
+ .bg{
+   position:fixed; inset:0;
+-  background-image: url('landing.jpg'), linear-gradient(180deg,#111,#111);
++  background-image: url('/landing.jpg'), linear-gradient(180deg,#111,#111);
+   background-size: cover; background-position: center; filter: none;
+-  z-index:-1;
++  z-index:0;           /* sit behind fixed UI but not behind the parent */
++  pointer-events:none; /* ignore clicks */
+ }
     .pill{background:rgba(17,17,17,.75); backdrop-filter: blur(8px);
       color:#f5f7fa; border:1px solid rgba(255,255,255,.12);
       border-radius:12px; padding:10px 16px; font-weight:600; letter-spacing:.02em; box-shadow:0 8px 24px rgba(0,0,0,.25)}
