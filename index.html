@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SINTAX LLC — Creative Music & Media</title>
   <meta name="description" content="SINTAX LLC: Music. Art. Theory. Prolonging perception."/>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>S</text></svg>">
+  <!-- Encode inline SVG to avoid any accidental parser quirks -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3ES%3C/text%3E%3C/svg%3E">
 
   <style>
     :root{
@@ -280,14 +281,14 @@
     enterWrap.addEventListener('click', showMain);
     enterWrap.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); showMain(); } });
 
-    /* ------------ TRON BIKE (wrap + fading trail + faint grid) ------------ */
+    /* ------------ TRON BIKES (1 yellow lone + 3 RGB formation) ------------ */
     function initTron(){
       const cvs = document.getElementById('tron');
       const ctx = cvs.getContext('2d', { alpha: true });
 
+      // --- Pixel buffer scaling for chunky CRT look ---
       const PIX = 3; // internal pixel size
       function resize(){
-        // internal low-res buffer for chunky pixels
         const w = Math.max(1, Math.floor(window.innerWidth  / PIX));
         const h = Math.max(1, Math.floor(window.innerHeight / PIX));
         cvs.width  = w;
@@ -297,88 +298,115 @@
       }
       resize(); window.addEventListener('resize', resize);
 
-      // Bike state
-      const COLOR = '#ffff00';
-      let x = Math.floor(cvs.width * 0.15);
-      let y = Math.floor(cvs.height * 0.5);
-      let angle = 0;
-      let speed = 0.95;
-      let steer = 0, targetSteer = 0;
-      const MAX_STEER = 0.012;
+      // --- Colors ---
+      const YELLOW = '#ffff00'; // lone ranger
+      const RED    = '#ff0000';
+      const GREEN  = '#00ff00';
+      const BLUE   = '#0000ff';
 
-      const FADE_ALPHA = 0.18;   // 0.14–0.22: higher = shorter trail
+      // --- Trail parameters ---
+      const FADE_ALPHA = 0.18;   // higher = shorter trail
       const TRAIL_BLUR = 10;
       const BIKE_BLUR  = 18;
 
-      function lerp(a,b,t){ return a + (b-a)*t; }
+      const lerp = (a,b,t)=>a+(b-a)*t;
+      const wrap = (v,max)=> (v<0? v+max : (v>=max? v-max : v));
 
+      // --- Grid (subtle) ---
       function drawGrid(){
-        const w = cvs.width, h = cvs.height;
+        const w=cvs.width,h=cvs.height; ctx.save(); ctx.globalAlpha=0.06; ctx.strokeStyle='#444'; ctx.lineWidth=1;
+        const step=Math.max(8, Math.floor(24/PIX));
+        for(let gx=0; gx<w; gx+=step){ ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,h); ctx.stroke(); }
+        for(let gy=0; gy<h; gy+=step){ ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(w,gy); ctx.stroke(); }
+        ctx.restore();
+      }
+
+      // --- Bikes ---
+      const lone = { // yellow: roams independently
+        x: Math.floor(cvs.width*0.18),
+        y: Math.floor(cvs.height*0.55),
+        angle: 0,
+        speed: 0.95,
+        steer: 0,
+        targetSteer: 0,
+        color: YELLOW
+      };
+
+      const group = { // RGB formation leader (GREEN center)
+        x: Math.floor(cvs.width*0.68),
+        y: Math.floor(cvs.height*0.4),
+        angle: 0.0,
+        speed: 0.92,
+        spacing: 10 // lateral pixel offset between bikes
+      };
+
+      let t=0; // time counter
+
+      function drawBikePixel(x,y,color,headDx,headDy){
         ctx.save();
-        ctx.globalAlpha = 0.06;       // faint
-        ctx.strokeStyle = '#444';
-        ctx.lineWidth = 1;
-        const step = Math.max(8, Math.floor(24/PIX));
-        for(let gx=0; gx<w; gx+=step){
-          ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,h); ctx.stroke();
-        }
-        for(let gy=0; gy<h; gy+=step){
-          ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(w,gy); ctx.stroke();
-        }
+        ctx.globalCompositeOperation='lighter';
+        ctx.shadowColor=color; ctx.shadowBlur=TRAIL_BLUR; ctx.fillStyle=color;
+        ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1); // trail pixel
+        ctx.shadowBlur=BIKE_BLUR;
+        ctx.fillRect(Math.floor(x), Math.floor(y), 2, 2); // body
+        ctx.fillRect(Math.floor(x+headDx), Math.floor(y+headDy), 1, 1); // headlight
         ctx.restore();
       }
 
       function step(){
-        // fade old frame (quick trail decay)
-        ctx.save();
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.globalAlpha = FADE_ALPHA;
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0,0,cvs.width,cvs.height);
-        ctx.restore();
+        const w=cvs.width,h=cvs.height;
 
-        // grid (subtle, on top of fade)
+        // Fade the canvas for trails
+        ctx.save(); ctx.globalCompositeOperation='source-over'; ctx.globalAlpha=FADE_ALPHA; ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h); ctx.restore();
+
+        // Grid overlay
         drawGrid();
 
-        // gentle steering changes
-        if (Math.random() < 0.02) {
-          targetSteer = (Math.random()*2 - 1) * MAX_STEER;
+        // --- Update lone (yellow) with gentle random wander ---
+        if (Math.random() < 0.02) { lone.targetSteer = (Math.random()*2 - 1) * 0.012; }
+        lone.steer = lerp(lone.steer, lone.targetSteer, 0.03);
+        lone.angle += lone.steer;
+        lone.x += Math.cos(lone.angle) * lone.speed;
+        lone.y += Math.sin(lone.angle) * lone.speed;
+        lone.x = wrap(lone.x,w); lone.y = wrap(lone.y,h);
+
+        // --- Update RGB formation (moves side-by-side) ---
+        // Leader follows a smooth sine-steered path
+        const baseSteer = 0.004 * Math.sin(t*0.02);
+        group.angle = (group.angle||0) + baseSteer;
+        group.x += Math.cos(group.angle) * group.speed;
+        group.y += Math.sin(group.angle) * group.speed;
+        group.x = wrap(group.x,w); group.y = wrap(group.y,h);
+
+        // Compute lateral normal for side-by-side offsets
+        const nx = -Math.sin(group.angle);
+        const ny =  Math.cos(group.angle);
+        const s  = group.spacing;
+
+        // Positions: RED (left), GREEN (center), BLUE (right)
+        const green = { x: group.x,        y: group.y,        color: GREEN };
+        const red   = { x: group.x - s*1.5*nx, y: group.y - s*1.5*ny, color: RED   };
+        const blue  = { x: group.x + s*1.5*nx, y: group.y + s*1.5*ny, color: BLUE  };
+
+        // Wrap offsets too (edge continuity)
+        red.x=wrap(red.x,w); red.y=wrap(red.y,h);
+        green.x=wrap(green.x,w); green.y=wrap(green.y,h);
+        blue.x=wrap(blue.x,w); blue.y=wrap(blue.y,h);
+
+        // --- Draw all bikes ---
+        const all = [
+          {x:lone.x,y:lone.y,angle:lone.angle,color:YELLOW},
+          {x:red.x,y:red.y,angle:group.angle,color:RED},
+          {x:green.x,y:green.y,angle:group.angle,color:GREEN},
+          {x:blue.x,y:blue.y,angle:group.angle,color:BLUE}
+        ];
+        for(const b of all){
+          const hx = Math.round(Math.cos(b.angle));
+          const hy = Math.round(Math.sin(b.angle));
+          drawBikePixel(b.x,b.y,b.color,hx,hy);
         }
-        steer = lerp(steer, targetSteer, 0.03);
-        angle += steer;
 
-        // move
-        x += Math.cos(angle) * speed;
-        y += Math.sin(angle) * speed;
-
-        // wrap edges
-        if (x < 0) x += cvs.width;
-        if (x >= cvs.width) x -= cvs.width;
-        if (y < 0) y += cvs.height;
-        if (y >= cvs.height) y -= cvs.height;
-
-        // trail pixel
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
-        ctx.shadowColor = COLOR;
-        ctx.shadowBlur  = TRAIL_BLUR;
-        ctx.fillStyle   = COLOR;
-        ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
-        ctx.restore();
-
-        // bike (little brighter)
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
-        ctx.shadowColor = COLOR;
-        ctx.shadowBlur  = BIKE_BLUR;
-        ctx.fillStyle   = COLOR;
-        const bx = Math.floor(x), by = Math.floor(y);
-        ctx.fillRect(bx, by, 2, 2); // body
-        const hx = bx + Math.round(Math.cos(angle));
-        const hy = by + Math.round(Math.sin(angle));
-        ctx.fillRect(hx, hy, 1, 1); // headlight
-        ctx.restore();
-
+        t++;
         requestAnimationFrame(step);
       }
 
@@ -416,6 +444,30 @@
       if(e.key === 'Escape' && aboutOV.style.display === 'block') closeAbout();
       if((e.key === 'Enter' || e.key === ' ') && document.activeElement === aboutBtn){ e.preventDefault(); openAbout(); }
     });
+
+    /* --------------------------
+       Minimal runtime tests
+       (logs to console; no UI impact)
+    ---------------------------*/
+    function assert(cond, msg){ if(!cond){ console.error('❌ Test failed:', msg); throw new Error(msg); } else { console.log('✅', msg);} }
+
+    // Test 1: canvas initializes after ENTER
+    (function testCanvasInit(){
+      const beforeW = document.getElementById('tron').width;
+      // simulate showing main (without waiting for user)
+      // NOTE: We don't call showMain() automatically to preserve UX.
+      // Instead, verify function presence.
+      assert(typeof initTron === 'function', 'initTron() exists');
+    })();
+
+    // Test 2: About dialog toggle
+    (function testAboutToggle(){
+      openAbout();
+      assert(aboutOV.style.display === 'block', 'About opens');
+      closeAbout();
+      assert(aboutOV.style.display === 'none', 'About closes');
+    })();
+
   </script>
 </body>
 </html>
