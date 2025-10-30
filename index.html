@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SinTax LLC — Creative Music & Media</title>
-  <meta name="description" content="SinTax LLC: Music. Art. Theory. Prolonging perception."/>
+  <title>SINTAX LLC — Creative Music & Media</title>
+  <meta name="description" content="SINTAX LLC: Music. Art. Theory. Prolonging perception."/>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>S</text></svg>">
 
   <style>
@@ -104,7 +104,9 @@
       color:#f5f7fa; border:1px solid rgba(255,255,255,.12);
       border-radius:12px; padding:10px 16px; font-weight:600; letter-spacing:.02em;
       box-shadow:0 8px 24px rgba(0,0,0,.25);
+      cursor:default;
     }
+    .clickable{cursor:pointer}
     .menu{display:inline-grid; grid-template-columns:repeat(3,8px); gap:6px; padding:10px 14px}
     .dot{width:8px; height:8px; background:#e5e7eb; border-radius:2px}
 
@@ -118,6 +120,54 @@
       opacity:0; transform:translateY(12px); transition:opacity .45s ease, transform .45s ease;
     }
     .caption.show{opacity:1; transform:none}
+
+    /* ---------- ABOUT OVERLAY ---------- */
+    #aboutOverlay{
+      position:fixed; inset:0; z-index:7; display:none;
+      background:rgba(0,0,0,.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      animation:fadeIn .35s ease forwards;
+    }
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+    #aboutPanel{
+      position:relative; margin:6vh auto 4vh; width:min(92vw, 980px);
+      border:1px solid rgba(255,255,0,.25);
+      background:linear-gradient(180deg, rgba(0,0,0,.85), rgba(0,0,0,.7));
+      color:#fff; border-radius:14px; box-shadow:0 0 22px rgba(255,255,0,.15), 0 14px 40px rgba(0,0,0,.6);
+      overflow:hidden;
+    }
+    .aboutHeader{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 18px; border-bottom:1px solid rgba(255,255,0,.2);
+      background:rgba(17,17,17,.8);
+    }
+    .aboutTitle{
+      font-size:clamp(18px,2.2vw,28px); font-weight:800; letter-spacing:.06em;
+      color:var(--y); text-shadow:0 0 8px rgba(255,255,0,.5);
+    }
+    .aboutClose{
+      background:transparent; border:1px solid rgba(255,255,0,.6);
+      color:var(--y); border-radius:8px; padding:6px 10px; cursor:pointer;
+      font-weight:700; letter-spacing:.06em; text-shadow:0 0 6px rgba(255,255,0,.3);
+    }
+    .aboutBody{
+      padding:18px; max-height:70vh; overflow:auto; line-height:1.35;
+      scrollbar-width:thin; scrollbar-color: var(--y) rgba(255,255,0,.1);
+    }
+    .aboutBody h2{
+      margin:0 0 10px; font-size:clamp(22px,3vw,34px);
+      text-shadow:0 0 10px var(--y);
+    }
+    .aboutBody p{margin:10px 0 14px; color:#eaeaea}
+    .aboutBody em{color:var(--y)}
+
+    /* focus ring for a11y */
+    .focus-ring:focus{outline:2px dashed var(--y); outline-offset:2px}
+
+    /* small helpers */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   </style>
 </head>
 <body>
@@ -142,20 +192,40 @@
   </section>
 
   <!-- ---------- MAIN ---------- -->
-  <main id="main" role="main" aria-label="SinTax landing">
+  <main id="main" role="main" aria-label="SINTAX landing">
     <canvas id="tron"></canvas>
 
     <div class="top-row">
       <div class="pill" aria-label="brand">SINTAX<sup>®</sup></div>
-      <div class="pill menu" aria-label="menu">
-        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <div style="display:flex; gap:10px; align-items:center">
+        <button id="aboutBtn" class="pill clickable focus-ring" aria-haspopup="dialog" aria-controls="aboutOverlay" aria-expanded="false">ABOUT</button>
+        <div class="pill menu" aria-label="menu">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
       </div>
     </div>
 
     <div id="cap" class="caption">Music. Art. Theory. Prolonging Perception</div>
   </main>
+
+  <!-- ---------- ABOUT OVERLAY / PANEL ---------- -->
+  <div id="aboutOverlay" role="dialog" aria-modal="true" aria-labelledby="aboutHeading" aria-describedby="aboutContent">
+    <div id="aboutPanel">
+      <div class="aboutHeader">
+        <div class="aboutTitle">ABOUT</div>
+        <button id="aboutClose" class="aboutClose focus-ring" aria-label="Close About">CLOSE ✕</button>
+      </div>
+      <div class="aboutBody" id="aboutContent">
+        <h2 id="aboutHeading">About SINTAX LLC</h2>
+        <p>SINTAX LLC is a multidisciplinary creative house built at the intersection of <em>music, art, and technology</em>. Founded by <strong>Jaison Mathew</strong>, SINTAX represents a new generation of creators who blur the line between sound, image, and innovation.</p>
+        <p>From <strong>audio engineering, mixing, and songwriting</strong> to <strong>photography, visual direction, and AI consulting</strong>, SINTAX operates as a hub where ideas take form — where art isn’t just produced, but <em>crafted with purpose and perception</em>.</p>
+        <p>Jaison currently serves as <strong>Studio Manager at Mic Vision Studios</strong> in Garnerville, New York — a full-service production space just 30 minutes north of NYC.</p>
+        <p>At its core, SINTAX is about connection — between mediums, between creators, and between the analog and digital worlds.<br><strong>Music. Art. Theory. Prolonging Perception.</strong></p>
+      </div>
+    </div>
+  </div>
 
   <script>
     /* ------------ Loader blocks ------------ */
@@ -163,7 +233,7 @@
     const blockCount=10, mid=Math.floor(blockCount/2), fillSpeed=250;
     let current=0, direction=1;
     const blocks=[];
-    for(let i=0;i<blockCount;i++){const b=document.createElement('div'); b.className='loader-block'; loader.appendChild(b); blocks.push(b);}
+    for(let i=0;i<blockCount;i++){const b=document.createElement('div'); b.className='loader-block'; loader.appendChild(b); blocks.push(b);}    
     function animateLoop(){blocks.forEach((b,i)=>b.classList.toggle('filled', i<=current)); current+=direction; if(current===mid||current===0) direction*=-1;}
     const animTimer=setInterval(animateLoop, fillSpeed);
 
@@ -192,7 +262,7 @@
       });
       const s=document.getElementById('score'); if(s) s.textContent=score;
     }
-    function loopMini(){ctxMini.clearRect(0,0,canvasMini.width,canvasMini.height); updateMini(); drawShip(); drawAsteroids(); requestAnimationFrame(loopMini);}
+    function loopMini(){ctxMini.clearRect(0,0,canvasMini.width,canvasMini.height); updateMini(); drawShip(); drawAsteroids(); requestAnimationFrame(loopMini);}    
     if(matchMedia('(min-width: 601px)').matches){ music.volume=.14; music.play().catch(()=>{}); loopMini(); }
 
     /* ------------ ENTER → show main ------------ */
@@ -243,16 +313,17 @@
       function lerp(a,b,t){ return a + (b-a)*t; }
 
       function drawGrid(){
+        const w = cvs.width, h = cvs.height;
         ctx.save();
         ctx.globalAlpha = 0.06;       // faint
         ctx.strokeStyle = '#444';
         ctx.lineWidth = 1;
         const step = Math.max(8, Math.floor(24/PIX));
-        for(let gx=0; gx<cvs.width; gx+=step){
-          ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,cvs.height); ctx.stroke();
+        for(let gx=0; gx<w; gx+=step){
+          ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,h); ctx.stroke();
         }
-        for(let gy=0; gy<cvs.height; gy+=step){
-          ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(cvs.width,gy); ctx.stroke();
+        for(let gy=0; gy<h; gy+=step){
+          ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(w,gy); ctx.stroke();
         }
         ctx.restore();
       }
@@ -313,6 +384,38 @@
 
       step();
     }
+
+    /* ------------ ABOUT TOGGLING ------------ */
+    const aboutBtn   = document.getElementById('aboutBtn');
+    const aboutClose = document.getElementById('aboutClose');
+    const aboutOV    = document.getElementById('aboutOverlay');
+
+    function openAbout(){
+      aboutOV.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+      aboutBtn.setAttribute('aria-expanded','true');
+      // move focus to dialog for a11y
+      aboutClose.focus();
+    }
+
+    function closeAbout(){
+      aboutOV.style.display = 'none';
+      document.body.style.overflow = 'auto';
+      aboutBtn.setAttribute('aria-expanded','false');
+      aboutBtn.focus();
+    }
+
+    aboutBtn.addEventListener('click', openAbout);
+    aboutClose.addEventListener('click', closeAbout);
+
+    // close on backdrop click
+    aboutOV.addEventListener('click', (e)=>{ if(e.target === aboutOV) closeAbout(); });
+
+    // keyboard shortcuts
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape' && aboutOV.style.display === 'block') closeAbout();
+      if((e.key === 'Enter' || e.key === ' ') && document.activeElement === aboutBtn){ e.preventDefault(); openAbout(); }
+    });
   </script>
 </body>
 </html>
